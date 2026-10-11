@@ -6,3 +6,12 @@ __pycache__/
 data/raw/
 data/processed/
 models/
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Frontend environment files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
