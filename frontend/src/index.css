@@ -547,3 +547,51 @@ button { cursor: pointer; font-family: var(--font-sans); }
 .divider { height: 1px; background: var(--border); margin: 16px 0; }
 .truncate { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .mono { font-family: var(--font-mono); font-size: 0.8em; }
+
+/* ---- Alerts & Banners ---- */
+.alert-success {
+  background: var(--success-bg);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-left: 4px solid var(--success);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+}
+.alert-error {
+  background: var(--danger-bg);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-left: 4px solid var(--danger);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+}
+.alert-warning {
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-left: 4px solid var(--warning);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+}
+.input-error {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+.error-text {
+  font-size: 11px;
+  color: var(--danger);
+  margin-top: 4px;
+}
+

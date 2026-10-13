@@ -4,6 +4,9 @@ import { Activity } from 'lucide-react';
 
 export default function Topbar({ pageName }) {
   const [apiStatus, setApiStatus] = useState('checking'); // 'online'|'offline'|'checking'
+  const [dateStr] = useState(() =>
+    new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -36,7 +39,7 @@ export default function Topbar({ pageName }) {
           {statusLabel}
         </div>
         <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+          {dateStr}
         </div>
       </div>
     </header>

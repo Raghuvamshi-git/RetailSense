@@ -1,16 +1,18 @@
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend
+  Tooltip, ResponsiveContainer
 } from 'recharts';
 import KpiCard from '../components/KpiCard';
 import {
   DollarSign, ShoppingBag, AlertTriangle, Target,
-  TrendingUp, Package
+  TrendingUp, Package, Activity, ArrowRight, Cpu, SlidersHorizontal
 } from 'lucide-react';
 import {
-  DEMO_KPI, DEMO_FORECAST_SERIES, DEMO_WEEKLY_REVENUE,
+  DEMO_KPI, DEMO_WEEKLY_REVENUE,
   DEMO_CATEGORY_DEMAND, DEMO_ANOMALIES, DEMO_TOP_PRODUCTS
 } from '../data/demoData';
+import { useApi } from '../hooks/useApi';
+import { getHealth, API_BASE_URL } from '../api/client';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -29,12 +31,83 @@ const CustomTooltip = ({ active, payload, label }) => {
 const severityColor = { HIGH: 'var(--danger)', MEDIUM: 'var(--warning)', LOW: 'var(--success)' };
 const riskClass = { HIGH: 'risk-high', MEDIUM: 'risk-medium', LOW: 'risk-low' };
 
-export default function OverviewPage() {
+export default function OverviewPage({ onNavigate }) {
+  const { data: health, loading: healthLoading } = useApi(getHealth);
+
+  const isOnline = health?.status === 'healthy';
+
   return (
     <div className="animate-in">
       <div className="page-header">
-        <h1>Overview</h1>
-        <p>Executive summary of retail operations · All KPIs below are <strong style={{color:'var(--warning)'}}>DEMO DATA</strong></p>
+        <h1>Retail Analytics Overview</h1>
+        <p>
+          Executive operations summary &nbsp;·&nbsp;
+          Aggregate store rollups below currently use <strong style={{ color: 'var(--warning)' }}>DEMO DATA</strong>
+        </p>
+      </div>
+
+      {/* Live Integration Status Banner */}
+      <div className="card" style={{
+        marginBottom: 20,
+        background: 'linear-gradient(135deg, rgba(37,99,235,0.12), rgba(6,182,212,0.08))',
+        border: '1px solid var(--border-cyan)',
+        padding: '16px 20px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 8,
+              background: isOnline ? 'var(--success-bg)' : 'var(--danger-bg)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              <Activity size={20} color={isOnline ? 'var(--success)' : 'var(--danger)'} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                  Backend Services: {healthLoading ? 'Checking…' : (isOnline ? 'Online & Healthy' : 'Offline / Unreachable')}
+                </span>
+                <span style={{
+                  fontSize: 10,
+                  padding: '2px 8px',
+                  borderRadius: 12,
+                  background: isOnline ? 'var(--success-bg)' : 'var(--danger-bg)',
+                  color: isOnline ? 'var(--success)' : 'var(--danger)',
+                  border: `1px solid ${isOnline ? 'var(--success)' : 'var(--danger)'}`,
+                  fontWeight: 600
+                }}>
+                  {API_BASE_URL}
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
+                Live integrations active: <code>POST /forecast/</code> (XGBoost ML) &amp; <code>POST /inventory/</code> (Decision Engine).
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            {onNavigate && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('forecast')}
+                  className="btn-primary"
+                  style={{ fontSize: 12, padding: '8px 14px' }}
+                >
+                  <Cpu size={14} /> Run Live Forecast <ArrowRight size={13} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('inventory')}
+                  className="btn-secondary"
+                  style={{ fontSize: 12, padding: '8px 14px' }}
+                >
+                  <SlidersHorizontal size={14} /> Calculate Inventory <ArrowRight size={13} />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* KPI Grid */}
@@ -93,14 +166,18 @@ export default function OverviewPage() {
               <AreaChart data={DEMO_WEEKLY_REVENUE}>
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#2563eb" stopOpacity={0.3} />
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
                 <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
-                  tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                <YAxis
+                  tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#2563eb" strokeWidth={2} fill="url(#revGrad)" dot={false} />
               </AreaChart>
@@ -127,7 +204,7 @@ export default function OverviewPage() {
                 <Bar dataKey="demand" name="Units/day" fill="url(#catGrad)" radius={[0, 4, 4, 0]} />
                 <defs>
                   <linearGradient id="catGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="#06b6d4" />
+                    <stop offset="0%" stopColor="#06b6d4" />
                     <stop offset="100%" stopColor="#2563eb" />
                   </linearGradient>
                 </defs>
@@ -187,7 +264,7 @@ export default function OverviewPage() {
                 padding: '10px 14px',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: severityColor[a.severity] }}>{a.type.replace(/_/g,' ')}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: severityColor[a.severity] }}>{a.type.replace(/_/g, ' ')}</span>
                   <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{a.ts}</span>
                 </div>
                 <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: 0 }}>{a.desc}</p>
