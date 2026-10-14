@@ -215,6 +215,26 @@ export default function InventoryPage({ prefillDemand, prefillStd }) {
               <span>Calls live endpoint <strong>POST /inventory/</strong> via Decision Engine.</span>
             </div>
 
+            {prefillDemand != null && (
+              <div style={{
+                fontSize: 11,
+                color: 'var(--accent-cyan-lt)',
+                marginBottom: 14,
+                background: 'rgba(6,182,212,0.12)',
+                border: '1px solid var(--border-cyan)',
+                borderRadius: 6,
+                padding: '8px 10px',
+                display: 'flex',
+                gap: 8,
+                alignItems: 'center'
+              }}>
+                <CheckCircle2 size={14} color="var(--accent-cyan)" style={{ flexShrink: 0 }} />
+                <span>
+                  Imported demand ({Number(prefillDemand).toFixed(1)} units/day){prefillStd != null ? ` and std dev (${Number(prefillStd).toFixed(1)})` : ''} from Demand Forecasting.
+                </span>
+              </div>
+            )}
+
             {/* Quick Presets */}
             <div style={{ marginBottom: 14 }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 6, fontWeight: 500 }}>

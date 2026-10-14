@@ -5,7 +5,7 @@ import {
 import KpiCard from '../components/KpiCard';
 import {
   DollarSign, ShoppingBag, AlertTriangle, Target,
-  TrendingUp, Package, Activity, ArrowRight, Cpu, SlidersHorizontal
+  TrendingUp, Package, Activity, ArrowRight, Cpu, SlidersHorizontal, Tag
 } from 'lucide-react';
 import {
   DEMO_KPI, DEMO_WEEKLY_REVENUE,
@@ -80,7 +80,7 @@ export default function OverviewPage({ onNavigate }) {
                 </span>
               </div>
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
-                Live integrations active: <code>POST /forecast/</code> (XGBoost ML) &amp; <code>POST /inventory/</code> (Decision Engine).
+                Live integrations active: <code>POST /forecast/</code> (XGBoost ML), <code>POST /inventory/</code> (Decision Engine) &amp; <code>POST /pricing/</code> (Pricing Engine).
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function OverviewPage({ onNavigate }) {
                   className="btn-primary"
                   style={{ fontSize: 12, padding: '8px 14px' }}
                 >
-                  <Cpu size={14} /> Run Live Forecast <ArrowRight size={13} />
+                  <Cpu size={14} /> Forecast <ArrowRight size={13} />
                 </button>
                 <button
                   type="button"
@@ -102,7 +102,15 @@ export default function OverviewPage({ onNavigate }) {
                   className="btn-secondary"
                   style={{ fontSize: 12, padding: '8px 14px' }}
                 >
-                  <SlidersHorizontal size={14} /> Calculate Inventory <ArrowRight size={13} />
+                  <SlidersHorizontal size={14} /> Inventory <ArrowRight size={13} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('pricing')}
+                  className="btn-secondary"
+                  style={{ fontSize: 12, padding: '8px 14px' }}
+                >
+                  <Tag size={14} /> Pricing <ArrowRight size={13} />
                 </button>
               </>
             )}
